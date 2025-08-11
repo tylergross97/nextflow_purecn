@@ -1,0 +1,16 @@
+params {
+    // input
+    snp_blacklist   = "/path/to/project/data/genome_blacklist.bed"
+    tumor_cnr       = "/path/to/project/results/SAMPLE/variant_calling/cnvkit/TUMOR_vs_NORMAL/TUMOR.cnr"
+    vcf             = "/path/to/project/results/SAMPLE/variant_calling/mutect2/TUMOR_vs_NORMAL/TUMOR_vs_NORMAL.mutect2.filtered.vcf.gz"
+    
+    // output
+    outdir_base        = "results"
+    outdir_references  = "${params.outdir_base}/references"
+    outdir_purecn      = "${params.outdir_base}/purecn"
+}
+
+singularity {
+    enabled     = true
+    autoMounts  = true
+}
