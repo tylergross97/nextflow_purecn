@@ -6,7 +6,7 @@ process CNS_TO_SEG {
 	tuple val(sample_id), path(cns_file)
 
 	output:
-	path "${sample_id}.seg", emit: seg
+	tuple val(sample_id), path("${sample_id}.seg"), emit: seg
 
 	script:
 	"""

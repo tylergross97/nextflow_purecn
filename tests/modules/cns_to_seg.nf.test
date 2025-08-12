@@ -1,0 +1,31 @@
+nextflow_process {
+
+    name "Test Process CNS_TO_SEG"
+    script "modules/cns_to_seg.nf"
+    process "CNS_TO_SEG"
+
+    test("Should run without failures for a single sample") {
+
+        when {
+            process {
+                """
+                input[0] = tuple(
+                    'tumor_E3E_vs_normal_E3E',
+                    file("${projectDir}/tests/data/cnvkit/tumor_E3E_vs_normal_E3E/tumor_E3E.call.chr22.cns")
+                )
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            def output_tuple = process.out.seg[0]
+            def seg_path = path(output_tuple[1])
+            def seg_file = seg_path.csv(sep: "\t")
+            println("seg file summary: ${seg_file.table.structure()}")
+
+        }
+
+    }
+
+}

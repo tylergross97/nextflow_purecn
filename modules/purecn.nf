@@ -4,13 +4,10 @@ process PURECN {
     publishDir params.outdir_purecn, mode: 'copy'
 
     input:
-    path seg
-    path snp_blacklist
-    path tumor_cnr
-    path vcf
+    tuple val(sample_id), path(seg), path(snp_blacklist), path(tumor_cnr), path(vcf)
 
     output:
-    path 'purecn_output', emit: purecn_results
+    tuple val(sample_id), path("${sample_id}_purecn_output"), emit: purecn_results
 
     script:
     """    
@@ -20,15 +17,15 @@ process PURECN {
     mkdir purecn_output
     
     Rscript \$PURECN/PureCN.R \\
-        --out purecn_output \\
-        --sampleid PV1 \\
+        --out ${sample_id}_purecn_output \\
+        --sampleid ${sample_id} \\
         --tumor ${tumor_cnr} \\
         --seg-file ${seg} \\
         --vcf ${vcf} \\
-	--snp-blacklist ${snp_blacklist} \\
+	    --snp-blacklist ${snp_blacklist} \\
         --genome hg19 \\
         --fun-segmentation Hclust \\
-	--min-base-quality 20 \\
+	    --min-base-quality 20 \\
         --force --post-optimize --seed 123
     """
 }
