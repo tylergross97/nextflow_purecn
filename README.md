@@ -8,10 +8,10 @@ This pipeline is designed to run PureCN on the output of nf-core/sarek in tumor-
 
 ```bash
 sample_id,tumor_cnr,normal_cnr,tumor_cns,vcf
-<sample_tumor_vs_normal>,<path_to_tumor.cnr>,<path_to_normal.cnr>,<path_to_tumor.call.cns>,<path_to_filtered.vcf.gz>
-<sample_tumor_vs_normal>,<path_to_tumor.cnr>,<path_to_normal.cnr>,<path_to_tumor.call.cns>,<path_to_filtered.vcf.gz>
-<sample_tumor_vs_normal>,<path_to_tumor.cnr>,<path_to_normal.cnr>,<path_to_tumor.call.cns>,<path_to_filtered.vcf.gz>
-<sample_tumor_vs_normal>,<path_to_tumor.cnr>,<path_to_normal.cnr>,<path_to_tumor.call.cns>,<path_to_filtered.vcf.gz>
+<sample_tumor_vs_normal>,<path_to_tumor.cnr>,<path_to_normal.cnr>,<path_to_tumor.cns>,<path_to_filtered.vcf.gz>
+<sample_tumor_vs_normal>,<path_to_tumor.cnr>,<path_to_normal.cnr>,<path_to_tumor.cns>,<path_to_filtered.vcf.gz>
+<sample_tumor_vs_normal>,<path_to_tumor.cnr>,<path_to_normal.cnr>,<path_to_tumor.cns>,<path_to_filtered.vcf.gz>
+<sample_tumor_vs_normal>,<path_to_tumor.cnr>,<path_to_normal.cnr>,<path_to_tumor.cns>,<path_to_filtered.vcf.gz>
 ```
 
 - SNP Blacklist
