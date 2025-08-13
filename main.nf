@@ -56,15 +56,6 @@ def validateParameters() {
     }
 }
 
-// Function to set derived parameters
-def setDerivedParameters() {
-    if (params.outdir_base) {
-        // Always set these parameters if outdir_base is provided
-        params.outdir_purecn = params.outdir_purecn ?: "${params.outdir_base}/purecn"
-        params.outdir_references = params.outdir_references ?: "${params.outdir_base}/references"
-    }
-}
-
 // Helper function to handle flexible file paths
 def resolveFilePath(path) {
     return path.startsWith('/') ? file(path) : file("${projectDir}/${path}")
@@ -75,9 +66,6 @@ workflow {
     if (workflow.profile != 'test') {
         validateParameters()
     }
-    
-    // Set derived parameters
-    setDerivedParameters()
 
     ch_snp_blacklist = Channel.value(resolveFilePath(params.snp_blacklist))
 
