@@ -1,0 +1,31 @@
+nextflow_process {
+
+    name "Test Process PURECN"
+    script "modules/purecn.nf"
+    process "PURECN"
+    options "-stub"
+
+    test("Should run without failures") {
+
+        when {
+            process {
+                """
+                input[0] = tuple(
+                    'test_sample',
+                    file('${projectDir}/tests/data/test.seg'),
+                    file('${projectDir}/tests/data/test_blacklist.bed'),
+                    file('${projectDir}/tests/data/test_tumor.cnr'),
+                    file('${projectDir}/tests/data/test.vcf.gz')
+                )
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            println("Output tuple: ${process.out.purecn_results[0]}")
+        }
+
+    }
+
+}

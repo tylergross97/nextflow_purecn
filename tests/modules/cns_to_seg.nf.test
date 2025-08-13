@@ -3,15 +3,16 @@ nextflow_process {
     name "Test Process CNS_TO_SEG"
     script "modules/cns_to_seg.nf"
     process "CNS_TO_SEG"
+    options "-stub"
 
-    test("Should run without failures for a single sample") {
+    test("Should convert CNS to SEG format") {
 
         when {
             process {
                 """
                 input[0] = tuple(
-                    'tumor_E3E_vs_normal_E3E',
-                    file("${projectDir}/tests/data/cnvkit/tumor_E3E_vs_normal_E3E/tumor_E3E.call.chr22.cns")
+                    'test_sample',
+                    file('${projectDir}/tests/data/test.cns')
                 )
                 """
             }
@@ -19,13 +20,61 @@ nextflow_process {
 
         then {
             assert process.success
-            def output_tuple = process.out.seg[0]
-            def seg_path = path(output_tuple[1])
-            def seg_file = seg_path.csv(sep: "\t")
-            println("seg file summary: ${seg_file.table.structure()}")
-
+            assert process.out.seg
+            
+            with(process.out.seg) {
+                assert size() == 1
+                def sample_id = get(0)[0]
+                def seg_file = get(0)[1]
+                
+                assert sample_id == 'test_sample'
+                assert seg_file.toString().endsWith('.seg')
+                
+                // Check that the SEG file exists and has content
+                def seg_path = path(seg_file)
+                assert seg_path.exists()
+                
+                // Verify the SEG file format and content
+                def seg_content = seg_path.text
+                assert seg_content.contains('ID\tchrom\tloc.start\tloc.end')
+                assert seg_content.contains('test_sample\tchr1')
+                
+                // Count lines (should have header + data lines)
+                def lines = seg_content.split('\n').findAll { it.trim() }
+                assert lines.size() >= 2  // At least header + 1 data line
+            }
         }
-
     }
 
+    test("Should handle different sample IDs correctly") {
+
+        when {
+            process {
+                """
+                input[0] = tuple(
+                    'another_sample',
+                    file('${projectDir}/tests/data/test.cns')
+                )
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.seg
+            
+            with(process.out.seg) {
+                assert size() == 1
+                def sample_id = get(0)[0]
+                def seg_file = get(0)[1]
+                
+                assert sample_id == 'another_sample'
+                
+                // Verify the sample ID is correctly used in the output
+                def seg_content = path(seg_file).text
+                assert seg_content.contains('another_sample\tchr1')
+                assert !seg_content.contains('test_sample')
+            }
+        }
+    }
 }
