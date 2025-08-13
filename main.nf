@@ -1,6 +1,11 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl = 2
 
+// Set default parameters
+params.outdir_base = params.outdir_base ?: 'results'
+params.outdir_purecn = params.outdir_purecn ?: "${params.outdir_base}/purecn"
+params.outdir_references = params.outdir_references ?: "${params.outdir_base}/references"
+
 include { CNS_TO_SEG } from './modules/cns_to_seg.nf'
 include { PURECN } from './modules/purecn.nf'
 
@@ -54,12 +59,9 @@ def validateParameters() {
 // Function to set derived parameters
 def setDerivedParameters() {
     if (params.outdir_base) {
-        if (!params.outdir_purecn) {
-            params.outdir_purecn = "${params.outdir_base}/purecn"
-        }
-        if (!params.outdir_references) {
-            params.outdir_references = "${params.outdir_base}/references"
-        }
+        // Always set these parameters if outdir_base is provided
+        params.outdir_purecn = params.outdir_purecn ?: "${params.outdir_base}/purecn"
+        params.outdir_references = params.outdir_references ?: "${params.outdir_base}/references"
     }
 }
 
