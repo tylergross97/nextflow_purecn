@@ -4,8 +4,8 @@ process PURECN {
     publishDir params.outdir_purecn, mode: 'copy'
 
     input:
-    tuple val(sample_id), path(seg), path(snp_blacklist), path(tumor_cnr), path(vcf)
-
+    tuple val(sample_id), path(seg), path(snp_blacklist), path(tumor_cnr), path(vcf), path(fasta), path(gtf)
+    
     output:
     tuple val(sample_id), path("${sample_id}_purecn_output"), emit: purecn_results
 
@@ -23,7 +23,8 @@ process PURECN {
         --seg-file ${seg} \\
         --vcf ${vcf} \\
 	    --snp-blacklist ${snp_blacklist} \\
-        --genome hg38 \\
+        --fasta ${fasta} \\
+        --gtf ${gtf} \\
         --fun-segmentation Hclust \\
 	    --min-base-quality 20 \\
         --force --post-optimize --seed 123

@@ -14,7 +14,9 @@ def validateParameters() {
     def requiredParams = [
         'samplesheet': params.samplesheet,
         'snp_blacklist': params.snp_blacklist,
-        'outdir_base': params.outdir_base
+        'outdir_base': params.outdir_base,
+        'fasta': params.fasta,
+        'gtf': params.gtf
     ]
     
     def missingParams = []
@@ -97,7 +99,7 @@ workflow {
                 [sample_id, seg, tumor_cnr, vcf]
             }
             .combine(ch_snp_blacklist)
-            .map { sample_id, seg, tumor_cnr, vcf, snp_blacklist ->
-                [sample_id, seg, snp_blacklist, tumor_cnr, vcf]}
+            .map { sample_id, seg, tumor_cnr, vcf, snp_blacklist, fasta, gtf ->
+                [sample_id, seg, snp_blacklist, tumor_cnr, vcf, fasta, gtf]}
     )	
 }

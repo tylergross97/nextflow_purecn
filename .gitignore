@@ -9,5 +9,12 @@ tests/results/**
 .nextflow/
 .nextflow/**
 
+<<<<<<< HEAD
 work/
 work/**
+=======
+.nextflow.log*
+
+work/
+work/**
+>>>>>>> b75c2f17a1f14592a2759cc26021aabb015dd7ab
