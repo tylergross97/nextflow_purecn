@@ -1,3 +1,14 @@
+manifest {
+    name = "tylergross97/nextflow_purecn"
+    author = "Tyler Gross"
+    description = "Nextflow workflow for running PureCN from CNVKit"
+    version = "1.0.0"
+    mainScript = "main.nf"
+    homePage = "https://github.com/tylergross97/nextflow_purecn"
+    defaultBranch = "main"
+}
+
+
 # Nextflow nf-core/sarek (Mutect2+CNVKit) --> PureCN
 
 This pipeline is designed to run PureCN on the output of nf-core/sarek in tumor-normal mode with Mutect2 and CNVKit to generate clonality estaimtes of somatic variants
