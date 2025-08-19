@@ -1,12 +1,3 @@
-manifest {
-    name = "tylergross97/nextflow_purecn"
-    author = "Tyler Gross"
-    description = "Nextflow workflow for running PureCN from CNVKit"
-    version = "1.0.0"
-    mainScript = "main.nf"
-    homePage = "https://github.com/tylergross97/nextflow_purecn"
-    defaultBranch = "main"
-}
 
 
 # Nextflow nf-core/sarek (Mutect2+CNVKit) --> PureCN
