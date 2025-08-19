@@ -11,7 +11,7 @@ process CNS_TO_SEG {
 	script:
 	"""
     # Generate seg file with CNVkit
-    cnvkit.py export seg ${cns_file} --enumerate-chroms -o ${sample_id}.seg
+    cnvkit.py export seg ${cns_file} -o ${sample_id}.seg
 	
     # Replace the ID column with our sample_id
     awk -v id="${sample_id}" 'BEGIN {OFS="\\t"} NR==1 {\$1="ID"} NR>1 {\$1=id} {print}' ${sample_id}.seg > ${sample_id}.seg.tmp
