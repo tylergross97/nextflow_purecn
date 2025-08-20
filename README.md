@@ -21,3 +21,11 @@ sample_id,tumor_cnr,tumor_cns,vcf
 Path to hg38_encode_blacklist.bed file
 
 - Outdir_base
+
+- fasta
+
+Path to hg38 primary assembly .fa
+
+- gtf
+
+Path to hg38 primary assembly .gtf

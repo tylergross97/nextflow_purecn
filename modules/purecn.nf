@@ -4,8 +4,8 @@ process PURECN {
     publishDir params.outdir_purecn, mode: 'copy'
 
     input:
-    tuple val(sample_id), path(seg), path(snp_blacklist), path(tumor_cnr), path(vcf)
-
+    tuple val(sample_id), path(seg), path(snp_blacklist), path(tumor_cnr), path(vcf), path(fasta), path(gtf)
+    
     output:
     tuple val(sample_id), path("${sample_id}_purecn_output"), emit: purecn_results
 
@@ -14,43 +14,41 @@ process PURECN {
     # Set PURECN path
     export PURECN=\$(Rscript -e "cat(system.file('extdata', package='PureCN'))")
 
-    mkdir -p ${sample_id}_purecn_output
-
-    # --- FILTER ALT CONTIGS FROM VCF ---
-    VCF_FILE="${vcf}"
-    CNR_FILE="${tumor_cnr}"
+    mkdir purecn_output
     
-    # Create filtered file names (avoid double extensions)
-    VCF_FILTERED="${sample_id}.filtered.vcf"
-    CNR_FILTERED="${sample_id}.filtered.cnr"
-    
-    # Create uncompressed filtered VCF
-    zcat "\$VCF_FILE" \\
-      | awk '/^#/ || \$1 ~ /^chr([1-9]|1[0-9]|2[0-2]|X|Y)\$/' \\
-      > "\$VCF_FILTERED"
-
-    # --- FILTER ALT CONTIGS FROM CNR ---
-    awk 'NR==1 || \$1 ~ /^chr([1-9]|1[0-9]|2[0-2]|X|Y)\$/' "\$CNR_FILE" \\
-      > "\$CNR_FILTERED"
-
-    # --- RUN PURECN ON FILTERED FILES ---
     Rscript \$PURECN/PureCN.R \\
         --out ${sample_id}_purecn_output \\
         --sampleid ${sample_id} \\
-        --tumor "\$CNR_FILTERED" \\
+        --tumor ${tumor_cnr} \\
         --seg-file ${seg} \\
-        --vcf "\$VCF_FILTERED" \\
-        --snp-blacklist ${snp_blacklist} \\
-        --genome hg19 \\
+        --vcf ${vcf} \\
+	    --snp-blacklist ${snp_blacklist} \\
+        --fasta ${fasta} \\
+        --gtf ${gtf} \\
         --fun-segmentation Hclust \\
-        --min-base-quality 20 \\
+	    --min-base-quality 20 \\
         --force --post-optimize --seed 123
     """
     
     stub:
     """
+    # Create the output directory structure that PureCN would normally create
     mkdir -p ${sample_id}_purecn_output
+    
+    # Create typical PureCN output files for testing
     touch ${sample_id}_purecn_output/${sample_id}.csv
+    touch ${sample_id}_purecn_output/${sample_id}.pdf
+    touch ${sample_id}_purecn_output/${sample_id}_amplification_pvalues.csv
+    touch ${sample_id}_purecn_output/${sample_id}_chromosomes.pdf
+    touch ${sample_id}_purecn_output/${sample_id}_coverage_loess.pdf
+    touch ${sample_id}_purecn_output/${sample_id}_genes.csv
+    touch ${sample_id}_purecn_output/${sample_id}_local_optima.pdf
+    touch ${sample_id}_purecn_output/${sample_id}_loh.csv
+    touch ${sample_id}_purecn_output/${sample_id}_segmentation.pdf
+    touch ${sample_id}_purecn_output/${sample_id}_variants.csv
+    touch ${sample_id}_purecn_output/${sample_id}.log
+    
+    # Create a simple CSV with headers for the main results file
     echo "Sampleid,Purity,Ploidy,Sex,Contamination,Flagged,Curated,Comment" > ${sample_id}_purecn_output/${sample_id}.csv
     echo "${sample_id},0.75,2.1,F,0.02,FALSE,FALSE,Test stub output" >> ${sample_id}_purecn_output/${sample_id}.csv
     """
