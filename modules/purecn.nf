@@ -1,5 +1,5 @@
 process PURECN {
-    container "markusriester/purecn:latest"
+    container 'community.wave.seqera.io/library/bioconductor-dnacopy_bioconductor-org.hs.eg.db_bioconductor-purecn_bioconductor-txdb.hsapiens.ucsc.hg38.knowngene_pruned:781730955298c6e4'
     
     publishDir params.outdir_purecn, mode: 'copy'
 
