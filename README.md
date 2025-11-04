@@ -40,7 +40,11 @@ Path to hg38 primary assembly .fa
 Path to hg38 primary assembly .gtf
 
 ### Testing
-To test pipeline with a minimal dataset, run pipeline with -profile test
+To test pipeline with a minimal dataset, run pipeline with:
+```bash
+nextflow run tylergross97/nextflow_purecn -profile test,docker_or_singularity
+```
+The author parameters are predefined if running test profile
 
 ## Citations
 If you use this pipeline in your work, please cite: [Tyler Gross] (2025). PureCN Nextflow Pipeline [Computer Software]. https://github.com/tylergross97/nextflow_purecn
