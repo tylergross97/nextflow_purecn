@@ -4,6 +4,27 @@
 
 This pipeline is designed to run PureCN on the output of nf-core/sarek in tumor-normal mode with Mutect2 and CNVKit to generate clonality estaimtes of somatic variants
 
+## Workflow
+```mermaid
+flowchart TB
+  subgraph " "
+    subgraph params
+      v7["samplesheet"]
+      v1["snp_blacklist"]
+      v5["gtf"]
+      v3["fasta"]
+    end
+    v9([CNS_TO_SEG])
+    v10([PURECN])
+    v7 --> v9
+    v1 --> v10
+    v3 --> v10
+    v5 --> v10
+    v7 --> v10
+    v9 --> v10
+  end
+```
+
 ## How to run pipeline
 ```bash
 nextflow run tylergross97/nextflow_purecn \
