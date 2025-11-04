@@ -10,7 +10,7 @@ nextflow run tylergross97/nextflow_purecn \
   --samplesheet /path/to/samplesheet \
   --snp_blacklist /path/to/snp_blacklist \
   --outdir_base /path/to/outdir_base \
-  -profile test,singularity,docker 
+  -profile docker_or_singularity 
 ```
 
 ### Command Line Arguments
@@ -38,6 +38,9 @@ Path to hg38 primary assembly .fa
 #### gtf
 
 Path to hg38 primary assembly .gtf
+
+### Testing
+To test pipeline with a minimal dataset, run pipeline with -profile test
 
 ## Citations
 If you use this pipeline in your work, please cite: [Tyler Gross] (2025). PureCN Nextflow Pipeline [Computer Software]. https://github.com/tylergross97/nextflow_purecn
