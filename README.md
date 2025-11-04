@@ -29,3 +29,10 @@ Path to hg38 primary assembly .fa
 - gtf
 
 Path to hg38 primary assembly .gtf
+
+## Citations
+If you use this pipeline in your work, please cite: [Tyler Gross] (2025). PureCN Nextflow Pipeline [Computer Software]. https://github.com/tylergross97/nextflow_purecn
+
+This pipeline uses the following tools that should be cited independently:
+1. Di Tommaso, P., Chatzou, M., Floden, E. W., Barja, P. P., Palumbo, E., & Notredame, C. (2017). Nextflow enables reproducible computational workflows. Nature biotechnology, 35(4), 316-319.
+2. Riester, M., Singh, A. P., Brannon, A. R., Yu, K., Campbell, C. D., Chiang, D. Y., & Morrissey, M. P. (2016). PureCN: copy number calling and SNV classification using targeted short read sequencing. Source code for biology and medicine, 11(1), 13.
