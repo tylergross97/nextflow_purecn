@@ -41,7 +41,7 @@ process PURECN {
         --seg-file ${seg} \\
         --vcf "\$VCF_FILTERED" \\
         --snp-blacklist ${snp_blacklist} \\
-        --genome hg19 \\
+        --genome hg38 \\
         --fun-segmentation Hclust \\
         --min-base-quality 20 \\
         --force --post-optimize --seed 123
