@@ -30,6 +30,8 @@ flowchart TB
 nextflow run tylergross97/nextflow_purecn \
   --samplesheet /path/to/samplesheet \
   --snp_blacklist /path/to/snp_blacklist \
+  --fasta /path/to/fasta \
+  --gtf /path/to/gtf \
   --outdir_base /path/to/outdir_base \
   -profile docker_or_singularity 
 ```
