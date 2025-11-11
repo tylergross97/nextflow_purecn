@@ -14,7 +14,9 @@ def validateParameters() {
     def requiredParams = [
         'samplesheet': params.samplesheet,
         'snp_blacklist': params.snp_blacklist,
-        'outdir_base': params.outdir_base
+        'outdir_base': params.outdir_base,
+        'fasta': params.fasta,
+        'gtf': params.gtf
     ]
     
     def missingParams = []
@@ -68,6 +70,8 @@ workflow {
     }
 
     ch_snp_blacklist = Channel.value(resolveFilePath(params.snp_blacklist))
+    ch_fasta = Channel.value(resolveFilePath(params.fasta))
+    ch_gtf = Channel.value(resolveFilePath(params.gtf))
 
     ch_samplesheet = Channel
         .fromPath(params.samplesheet)
@@ -97,7 +101,9 @@ workflow {
                 [sample_id, seg, tumor_cnr, vcf]
             }
             .combine(ch_snp_blacklist)
-            .map { sample_id, seg, tumor_cnr, vcf, snp_blacklist ->
-                [sample_id, seg, snp_blacklist, tumor_cnr, vcf]}
+            .combine(ch_fasta)
+            .combine(ch_gtf)
+            .map { sample_id, seg, tumor_cnr, vcf, snp_blacklist, fasta, gtf ->
+                [sample_id, seg, snp_blacklist, tumor_cnr, vcf, fasta, gtf]}
     )	
 }

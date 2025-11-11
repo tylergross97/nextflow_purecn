@@ -15,7 +15,9 @@ nextflow_process {
                     file('${projectDir}/tests/data/test.seg'),
                     file('${projectDir}/tests/data/test_blacklist.bed'),
                     file('${projectDir}/tests/data/test_tumor.cnr'),
-                    file('${projectDir}/tests/data/test.vcf.gz')
+                    file('${projectDir}/tests/data/test.vcf.gz'),
+                    file('${projectDir}/test/data/synthetic_hg38.fa'),
+                    file('${projectDir}/tests/data/synthetic_hg38.gtf')
                 )
                 """
             }
