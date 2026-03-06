@@ -15,8 +15,6 @@ def validateParameters() {
         'samplesheet': params.samplesheet,
         'snp_blacklist': params.snp_blacklist,
         'outdir_base': params.outdir_base,
-        'fasta': params.fasta,
-        'gtf': params.gtf
     ]
     
     def missingParams = []
@@ -48,8 +46,8 @@ def validateParameters() {
         error "Samplesheet file not found: ${params.samplesheet}"
     }
     
-    // Validate that snp_blacklist exists (handle relative/absolute paths)
-    def snp_blacklist_file = (params.snp_blacklist.startsWith("/") || params.snp_blacklist.contains("://")) ?
+    // Validate that snp_blacklist exists (handle relative/absolute/S3 paths)
+    def snp_blacklist_file = (params.snp_blacklist.startsWith('/') || params.snp_blacklist.contains('://')) ?
         file(params.snp_blacklist) :
         file("${projectDir}/${params.snp_blacklist}")
     
@@ -58,9 +56,9 @@ def validateParameters() {
     }
 }
 
-// Helper function to handle flexible file paths
+// Helper function to handle flexible file paths (local absolute, relative, or S3/cloud URIs)
 def resolveFilePath(path) {
-    return (path.startsWith("/") || path.contains("://")) ? file(path) : file("${projectDir}/${path}")
+    return (path.startsWith('/') || path.contains('://')) ? file(path) : file("${projectDir}/${path}")
 }
 
 workflow {
@@ -70,8 +68,6 @@ workflow {
     }
 
     ch_snp_blacklist = Channel.value(resolveFilePath(params.snp_blacklist))
-    ch_fasta = Channel.value(resolveFilePath(params.fasta))
-    ch_gtf = Channel.value(resolveFilePath(params.gtf))
 
     ch_samplesheet = Channel
         .fromPath(params.samplesheet)
@@ -85,25 +81,25 @@ workflow {
             )
         }
 
-	CNS_TO_SEG(
+    CNS_TO_SEG(
         ch_samplesheet.map { sample_id, tumor_cns, tumor_cnr, vcf ->
             [sample_id, tumor_cns]
         }
     )
-	PURECN(
+
+    PURECN(
         CNS_TO_SEG.out.seg
             .join(
                 ch_samplesheet.map { sample_id, tumor_cns, tumor_cnr, vcf ->
                     [sample_id, tumor_cnr, vcf]
                 }
             )
-            .map { sample_id, seg, tumor_cnr, vcf -> 
+            .map { sample_id, seg, tumor_cnr, vcf ->
                 [sample_id, seg, tumor_cnr, vcf]
             }
             .combine(ch_snp_blacklist)
-            .combine(ch_fasta)
-            .combine(ch_gtf)
-            .map { sample_id, seg, tumor_cnr, vcf, snp_blacklist, fasta, gtf ->
-                [sample_id, seg, snp_blacklist, tumor_cnr, vcf, fasta, gtf]}
-    )	
+            .map { sample_id, seg, tumor_cnr, vcf, snp_blacklist ->
+                [sample_id, seg, snp_blacklist, tumor_cnr, vcf]
+            }
+    )
 }
