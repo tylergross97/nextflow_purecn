@@ -49,7 +49,7 @@ def validateParameters() {
     }
     
     // Validate that snp_blacklist exists (handle relative/absolute paths)
-    def snp_blacklist_file = params.snp_blacklist.startsWith('/') ?
+    def snp_blacklist_file = (params.snp_blacklist.startsWith("/") || params.snp_blacklist.contains("://")) ?
         file(params.snp_blacklist) :
         file("${projectDir}/${params.snp_blacklist}")
     
@@ -60,7 +60,7 @@ def validateParameters() {
 
 // Helper function to handle flexible file paths
 def resolveFilePath(path) {
-    return path.startsWith('/') ? file(path) : file("${projectDir}/${path}")
+    return (path.startsWith("/") || path.contains("://")) ? file(path) : file("${projectDir}/${path}")
 }
 
 workflow {
