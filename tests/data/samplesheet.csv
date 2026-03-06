@@ -1,0 +1,2 @@
+sample_id,tumor_cns,tumor_cnr,vcf
+test_sample,tests/data/test.cns,tests/data/test_tumor.cnr,tests/data/test.vcf.gz

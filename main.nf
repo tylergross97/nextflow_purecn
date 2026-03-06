@@ -7,7 +7,9 @@ params.outdir_purecn = params.outdir_purecn ?: "${params.outdir_base}/purecn"
 params.outdir_references = params.outdir_references ?: "${params.outdir_base}/references"
 
 include { CNS_TO_SEG } from './modules/cns_to_seg.nf'
-include { PURECN } from './modules/purecn.nf'
+include { PURECN_PREPARE } from './modules/purecn_prepare.nf'
+include { PURECN_RUN } from './modules/purecn_run.nf'
+include { PURECN_PARSE_RESULTS } from './modules/purecn_parse_results.nf'
 
 // Parameter validation function
 def validateParameters() {
@@ -81,25 +83,37 @@ workflow {
             )
         }
 
+    // Step 1: Convert CNS to SEG format
     CNS_TO_SEG(
-        ch_samplesheet.map { sample_id, tumor_cns, tumor_cnr, vcf ->
+        ch_samplesheet.map { sample_id, tumor_cns, _tumor_cnr, _vcf ->
             [sample_id, tumor_cns]
         }
     )
 
-    PURECN(
-        CNS_TO_SEG.out.seg
+    // Step 2: Prepare PureCN environment for each sample
+    PURECN_PREPARE(
+        ch_samplesheet.map { sample_id, _tumor_cns, _tumor_cnr, _vcf ->
+            sample_id
+        }
+    )
+
+    // Step 3: Run main PureCN analysis with prepared environment
+    PURECN_RUN(
+        PURECN_PREPARE.out.purecn_env
+            .join(CNS_TO_SEG.out.seg)
             .join(
-                ch_samplesheet.map { sample_id, tumor_cns, tumor_cnr, vcf ->
+                ch_samplesheet.map { sample_id, _tumor_cns, tumor_cnr, vcf ->
                     [sample_id, tumor_cnr, vcf]
                 }
             )
-            .map { sample_id, seg, tumor_cnr, vcf ->
-                [sample_id, seg, tumor_cnr, vcf]
-            }
             .combine(ch_snp_blacklist)
-            .map { sample_id, seg, tumor_cnr, vcf, snp_blacklist ->
-                [sample_id, seg, snp_blacklist, tumor_cnr, vcf]
+            .map { sample_id, purecn_path, seg, tumor_cnr, vcf, snp_blacklist ->
+                [sample_id, purecn_path, seg, snp_blacklist, tumor_cnr, vcf]
             }
+    )
+
+    // Step 4: Parse and summarize results
+    PURECN_PARSE_RESULTS(
+        PURECN_RUN.out.purecn_results
     )
 }
