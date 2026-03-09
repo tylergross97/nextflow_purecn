@@ -47,17 +47,16 @@ def validateParameters() {
     }
     
     // Validate that snp_blacklist exists (handle relative/absolute/S3 paths)
-    def snp_blacklist_path = params.snp_blacklist
-    def snp_blacklist_file = (snp_blacklist_path.startsWith('/') || snp_blacklist_path.contains('://')) ?
-        file(snp_blacklist_path) :
-        file("${projectDir}/${snp_blacklist_path}")
+    def snp_blacklist_file = (params.snp_blacklist.startsWith('/') || params.snp_blacklist.contains('://')) ?
+        file(params.snp_blacklist) :
+        file("${projectDir}/${params.snp_blacklist}")
     
     if (!snp_blacklist_file.exists()) {
         error "SNP blacklist file not found: ${params.snp_blacklist}"
     }
 }
 
-// Helper function to handle flexible file paths (local absolute, relative, or S3/HTTP URIs)
+// Helper function to handle flexible file paths (local absolute, relative, or S3/cloud URIs)
 def resolveFilePath(path) {
     return (path.startsWith('/') || path.contains('://')) ? file(path) : file("${projectDir}/${path}")
 }
@@ -87,6 +86,7 @@ workflow {
             [sample_id, tumor_cns]
         }
     )
+
     PURECN(
         CNS_TO_SEG.out.seg
             .join(
@@ -99,6 +99,7 @@ workflow {
             }
             .combine(ch_snp_blacklist)
             .map { sample_id, seg, tumor_cnr, vcf, snp_blacklist ->
-                [sample_id, seg, snp_blacklist, tumor_cnr, vcf]}
+                [sample_id, seg, snp_blacklist, tumor_cnr, vcf]
+            }
     )
 }

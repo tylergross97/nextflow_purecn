@@ -1,8 +1,8 @@
 process PURECN {
     container 'community.wave.seqera.io/library/bioconductor-dnacopy_bioconductor-org.hs.eg.db_bioconductor-purecn_bioconductor-txdb.hsapiens.ucsc.hg38.knowngene_pruned:781730955298c6e4'
 
-    memory '32 GB'
     cpus   4
+    memory '64 GB'
 
     publishDir params.outdir_purecn, mode: 'copy'
 
@@ -10,7 +10,7 @@ process PURECN {
     tuple val(sample_id), path(seg), path(snp_blacklist), path(tumor_cnr), path(vcf)
     
     output:
-    tuple val(sample_id), path("${sample_id}_purecn_output"), emit: purecn_results
+    tuple val(sample_id), path("${sample_id}_purecn_output*"), emit: purecn_results
 
     script:
     """    
@@ -34,10 +34,7 @@ process PURECN {
     
     stub:
     """
-    # Create the output directory structure that PureCN would normally create
     mkdir -p ${sample_id}_purecn_output
-    
-    # Create typical PureCN output files for testing
     touch ${sample_id}_purecn_output/${sample_id}.csv
     touch ${sample_id}_purecn_output/${sample_id}.pdf
     touch ${sample_id}_purecn_output/${sample_id}_amplification_pvalues.csv
@@ -49,8 +46,6 @@ process PURECN {
     touch ${sample_id}_purecn_output/${sample_id}_segmentation.pdf
     touch ${sample_id}_purecn_output/${sample_id}_variants.csv
     touch ${sample_id}_purecn_output/${sample_id}.log
-    
-    # Create a simple CSV with headers for the main results file
     echo "Sampleid,Purity,Ploidy,Sex,Contamination,Flagged,Curated,Comment" > ${sample_id}_purecn_output/${sample_id}.csv
     echo "${sample_id},0.75,2.1,F,0.02,FALSE,FALSE,Test stub output" >> ${sample_id}_purecn_output/${sample_id}.csv
     """
