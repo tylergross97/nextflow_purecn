@@ -7,7 +7,7 @@ process PURECN {
     tuple val(sample_id), path(seg), path(snp_blacklist), path(tumor_cnr), path(vcf)
     
     output:
-    tuple val(sample_id), path("${sample_id}_purecn_output"), emit: purecn_results
+    tuple val(sample_id), path("${sample_id}_purecn_output*"), emit: purecn_results
 
     script:
     """    
