@@ -2,7 +2,7 @@ process PURECN {
     container 'community.wave.seqera.io/library/bioconductor-dnacopy_bioconductor-org.hs.eg.db_bioconductor-purecn_bioconductor-txdb.hsapiens.ucsc.hg38.knowngene_pruned:781730955298c6e4'
 
     cpus   4
-    memory '32 GB'
+    memory '64 GB'
 
     publishDir params.outdir_purecn, mode: 'copy'
 
